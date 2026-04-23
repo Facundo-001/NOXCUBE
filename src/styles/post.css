@@ -1,0 +1,9 @@
+.post-detalle-container {
+  padding: 6rem 2rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.post-detalle-container .post-card {
+  margin-bottom: 2rem;
+}

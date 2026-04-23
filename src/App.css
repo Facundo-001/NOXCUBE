@@ -1,0 +1,488 @@
+/* ==================== APP GLOBAL STYLES ==================== */
+@import './index.css';
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==================== LOADING SCREEN CON CUBO 3D ==================== */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #0a0a0a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  padding: 2rem;
+}
+
+.loading-logo {
+  opacity: 0;
+  animation: logoReveal 0.8s ease forwards;
+}
+
+.loading-logo .logo-text {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes logoReveal {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== CUBO 3D DORADO ESTILO RUBIK'S 2x2 ===== */
+.cube-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  perspective: 800px;
+  opacity: 0;
+  animation: cubeAppear 0.6s ease 0.2s forwards;
+}
+
+@keyframes cubeAppear {
+  0% { opacity: 0; transform: scale(0.5) rotate(-20deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+.cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: rotateCube 6s infinite linear;
+}
+
+@keyframes rotateCube {
+  0% { transform: rotateX(-20deg) rotateY(0deg); }
+  25% { transform: rotateX(-20deg) rotateY(90deg); }
+  50% { transform: rotateX(-20deg) rotateY(180deg); }
+  75% { transform: rotateX(-20deg) rotateY(270deg); }
+  100% { transform: rotateX(-20deg) rotateY(360deg); }
+}
+
+.cube-face {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding: 2px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(195, 164, 75, 0.3);
+}
+
+.cube-cell {
+  background: linear-gradient(135deg, var(--gold) 0%, #d4af37 50%, #f0d060 100%);
+  border-radius: 3px;
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.3), 0 0 5px rgba(195, 164, 75, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.cube-face.front .cube-cell:nth-child(1),
+.cube-face.front .cube-cell:nth-child(3) {
+  background: linear-gradient(135deg, var(--celeste) 0%, #4fc3f7 50%, #81d4fa 100%);
+}
+
+.cube-face.right .cube-cell:nth-child(2),
+.cube-face.right .cube-cell:nth-child(4) {
+  background: linear-gradient(135deg, var(--celeste) 0%, #4fc3f7 50%, #81d4fa 100%);
+}
+
+.cube-face.back .cube-cell:nth-child(1),
+.cube-face.back .cube-cell:nth-child(4) {
+  background: linear-gradient(135deg, var(--celeste) 0%, #4fc3f7 50%, #81d4fa 100%);
+}
+
+.front { transform: translateZ(60px); }
+.back { transform: rotateY(180deg) translateZ(60px); }
+.right { transform: rotateY(90deg) translateZ(60px); }
+.left { transform: rotateY(-90deg) translateZ(60px); }
+.top { transform: rotateX(90deg) translateZ(60px); }
+.bottom { transform: rotateX(-90deg) translateZ(60px); }
+
+.cube-shadow {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 15px;
+  background: radial-gradient(ellipse at center, rgba(195, 164, 75, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(8px);
+  animation: shadowPulse 2s infinite;
+}
+
+@keyframes shadowPulse {
+  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+}
+
+.loading-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: textFadeIn 0.6s ease 0.5s forwards;
+}
+
+@keyframes textFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.loading-dots span {
+  animation: dotPulse 1.4s infinite;
+  font-size: 1.5rem;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: 0s; }
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotPulse {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-5px); }
+}
+
+/* ==================== PÁGINA 404 PREMIUM ==================== */
+.not-found-container {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.not-found-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem 3rem;
+  max-width: 600px;
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.not-found-glitch {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.glitch-text {
+  font-size: 8rem;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 8px;
+  position: relative;
+  animation: glitch 3s infinite;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glitch-text::before {
+  animation: glitchTop 0.3s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+  transform: translate(-2px, -2px);
+}
+
+.glitch-text::after {
+  animation: glitchBottom 0.2s infinite;
+  clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+  transform: translate(2px, 2px);
+}
+
+@keyframes glitch {
+  0%, 100% { transform: skew(0deg); }
+  95% { transform: skew(2deg); }
+  97% { transform: skew(-2deg); }
+}
+
+@keyframes glitchTop {
+  0%, 100% { transform: translate(0); }
+  50% { transform: translate(-3px, -2px); }
+}
+
+@keyframes glitchBottom {
+  0%, 100% { transform: translate(0); }
+  50% { transform: translate(3px, 2px); }
+}
+
+.not-found-divider {
+  width: 80px;
+  height: 3px;
+  background: var(--gradient-primary);
+  border-radius: 3px;
+  margin: 1.5rem 0;
+}
+
+.not-found-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.not-found-message {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Cubo perdido con signo de interrogación */
+.not-found-illustration {
+  margin: 1rem 0 2rem;
+}
+
+.lost-cube {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+}
+
+.mini-cube {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  transform-style: preserve-3d;
+  animation: floatCube 3s infinite ease-in-out;
+}
+
+@keyframes floatCube {
+  0%, 100% { transform: rotateX(-15deg) rotateY(0deg) translateY(0); }
+  50% { transform: rotateX(-15deg) rotateY(180deg) translateY(-15px); }
+}
+
+.mini-face {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--gold) 0%, #d4af37 100%);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  border-radius: 6px;
+  box-shadow: 0 0 15px rgba(195, 164, 75, 0.3);
+}
+
+.mini-face.front { transform: translateZ(30px); }
+.mini-face.back { transform: rotateY(180deg) translateZ(30px); }
+.mini-face.right { transform: rotateY(90deg) translateZ(30px); }
+.mini-face.left { transform: rotateY(-90deg) translateZ(30px); }
+.mini-face.top { transform: rotateX(90deg) translateZ(30px); }
+.mini-face.bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+.question-mark {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 30px;
+  height: 30px;
+  background: var(--celeste);
+  color: var(--black);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(103, 232, 249, 0.4);
+  animation: questionBounce 2s infinite;
+}
+
+@keyframes questionBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1.1); }
+}
+
+.not-found-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.nf-btn {
+  padding: 0.8rem 2rem;
+  border-radius: var(--border-radius-pill);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+}
+
+.nf-btn.primary {
+  background: var(--primary);
+  color: var(--black);
+  box-shadow: var(--shadow-md);
+}
+
+.nf-btn.primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-gold-glow);
+}
+
+.nf-btn.secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.nf-btn.secondary:hover {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.not-found-footer {
+  margin-top: 3rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  opacity: 0.6;
+}
+
+/* ==================== UTILIDADES ==================== */
+::selection {
+  background: var(--primary);
+  color: var(--black);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .loading-logo .logo-text {
+    font-size: 2.2rem;
+  }
+  
+  .cube-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .cube-face {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .front { transform: translateZ(50px); }
+  .back { transform: rotateY(180deg) translateZ(50px); }
+  .right { transform: rotateY(90deg) translateZ(50px); }
+  .left { transform: rotateY(-90deg) translateZ(50px); }
+  .top { transform: rotateX(90deg) translateZ(50px); }
+  .bottom { transform: rotateX(-90deg) translateZ(50px); }
+  
+  .glitch-text {
+    font-size: 6rem;
+  }
+  
+  .not-found-title {
+    font-size: 1.6rem;
+  }
+  
+  .not-found-message {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading-logo .logo-text {
+    font-size: 1.8rem;
+  }
+  
+  .cube-container {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .cube-face {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .front { transform: translateZ(40px); }
+  .back { transform: rotateY(180deg) translateZ(40px); }
+  .right { transform: rotateY(90deg) translateZ(40px); }
+  .left { transform: rotateY(-90deg) translateZ(40px); }
+  .top { transform: rotateX(90deg) translateZ(40px); }
+  .bottom { transform: rotateX(-90deg) translateZ(40px); }
+  
+  .glitch-text {
+    font-size: 4.5rem;
+  }
+  
+  .not-found-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .nf-btn {
+    width: 100%;
+  }
+}

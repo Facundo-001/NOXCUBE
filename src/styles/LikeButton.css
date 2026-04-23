@@ -1,0 +1,65 @@
+/* ==================== LIKE BUTTON - ESTILO PREMIUM ==================== */
+
+.like-button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.98rem;
+  padding: 6px 10px;
+  border-radius: var(--border-radius-pill);
+  transition: var(--transition);
+  user-select: none;
+}
+
+.like-button:hover {
+  color: var(--text-primary);
+  background: rgba(195, 164, 75, 0.08);
+}
+
+.like-button.liked {
+  color: #ff4d6b;
+  animation: likePop 0.4s ease;
+}
+
+/* Icono del corazón */
+.like-button svg {
+  transition: transform 0.2s ease;
+  width: 22px;
+  height: 22px;
+}
+
+.like-button:hover svg {
+  transform: scale(1.15);
+}
+
+.like-button.liked svg {
+  fill: #ff4d6b;
+  stroke: #ff4d6b;
+}
+
+/* Animación sutil al likear */
+@keyframes likePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* ====================== RESPONSIVE ====================== */
+@media (max-width: 768px) {
+  .like-button {
+    font-size: 0.95rem;
+    padding: 5px 8px;
+    gap: 6px;
+  }
+  
+  .like-button svg {
+    width: 20px;
+    height: 20px;
+  }
+}

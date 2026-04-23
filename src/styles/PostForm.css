@@ -1,0 +1,118 @@
+/* ==================== POST FORM - ESTILO PREMIUM ==================== */
+
+.post-form {
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius);
+  padding: 1.75rem;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.post-form:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(195, 164, 75, 0.2);
+}
+
+/* Área de texto */
+.post-textarea {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 1.25rem 1.4rem;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  resize: none;
+  min-height: 120px;
+  margin-bottom: 1.25rem;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.post-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(195, 164, 75, 0.15);
+  background: #1F1F1F;
+}
+
+/* Contenedor de botones */
+.post-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Botón de publicar */
+.post-submit {
+  background: var(--primary);
+  color: var(--black);
+  border: none;
+  border-radius: var(--border-radius-pill);
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-submit:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-gold-glow);
+}
+
+.post-submit:active {
+  transform: scale(0.98);
+}
+
+/* Botón secundario (opcional, por si querés agregar "Cancelar" o "Borrador") */
+.post-cancel {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-pill);
+  padding: 0.75rem 1.6rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.post-cancel:hover {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border-color-light);
+}
+
+/* Placeholder más elegante */
+.post-textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+/* ====================== RESPONSIVE ====================== */
+@media (max-width: 768px) {
+  .post-form {
+    padding: 1.4rem;
+    margin-bottom: 2rem;
+  }
+
+  .post-textarea {
+    min-height: 110px;
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+  }
+
+  .post-submit {
+    padding: 0.7rem 1.8rem;
+    font-size: 0.98rem;
+  }
+}

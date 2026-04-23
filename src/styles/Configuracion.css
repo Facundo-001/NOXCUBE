@@ -1,0 +1,83 @@
+.config-container {
+    padding: 6rem 2rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.config-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+.config-card h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    background: var(--gradient-bg);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.config-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.config-input {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.config-input:focus {
+    outline: none;
+    border-color: var(--primary-start);
+}
+
+.config-input.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.config-btn {
+    background: var(--gradient-bg);
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.config-btn:hover {
+    opacity: 0.9;
+}
+
+.config-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.config-message {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}

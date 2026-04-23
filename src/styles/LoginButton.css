@@ -1,0 +1,15 @@
+.login-button {
+  background: var(--gradient-bg);
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.login-button:hover {
+  opacity: 0.9;
+}

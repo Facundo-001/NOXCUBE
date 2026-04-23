@@ -1,0 +1,67 @@
+# ==================== DEPENDENCIAS ====================
+node_modules
+/.pnp
+.pnp.js
+
+# ==================== BUILD ====================
+dist
+dist-ssr
+/build
+
+# ==================== VARIABLES DE ENTORNO ====================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+
+# ==================== FIREBASE (CREDENCIALES) ====================
+firebase-debug.log
+firebase-debug.*.log
+.firebase/
+.firebaserc
+firebase-admin-sdk.json
+serviceAccountKey.json
+*.secret.*
+*-secrets.json
+
+# ==================== LOGS ====================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==================== EDITOR ====================
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+Thumbs.db
+ehthumbs.db
+
+# ==================== TESTING ====================
+/coverage
+/.nyc_output
+
+# ==================== TEMPORALES ====================
+*.tmp
+*.temp
+.cache/
+.vite/
+vite.config.js.timestamp-*
+
+# ==================== REACT ====================
+.eslintcache
+*.tsbuildinfo

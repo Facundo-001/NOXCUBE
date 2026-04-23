@@ -1,0 +1,236 @@
+/* ==================== LOGIN / REGISTER - ESTILO PREMIUM ==================== */
+
+.login-page {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+  background: var(--bg-primary);
+  /* padding: 20px; */
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.split-screen {
+  width: 100vw;
+  /* max-width: 1100px; */
+  /* height: 620px; */
+  height: 100vh;
+  background: var(--bg-surface);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  position: relative;
+  border: 1px solid var(--border-color-light);
+}
+
+.form-panel,
+.image-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  transition: transform 0.7s cubic-bezier(0.32, 0.72, 0, 1);
+  position: relative;
+}
+
+.form-panel {
+  background: var(--bg-surface);
+  border-radius: 28px 0 0 28px;
+}
+
+.image-panel {
+  background: linear-gradient(135deg, var(--gold), var(--celeste));
+  border-radius: 0 28px 28px 0;
+  color: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animaciones de cambio entre login y register */
+.form-panel.slide-right {
+  transform: translateX(100%);
+}
+
+.image-panel.slide-left {
+  transform: translateX(-100%);
+}
+
+/* Contenido del formulario */
+.form-wrapper {
+  width: 100%;
+  max-width: 360px;
+}
+
+.form-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  margin-bottom: 2.2rem;
+  text-align: center;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.input-field {
+  background: #1A1A1A;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1rem 1.3rem;
+  color: var(--text-primary);
+  font-size: 1.02rem;
+  transition: var(--transition);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(195, 164, 75, 0.15);
+  background: #222;
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+/* Mensaje de error */
+.error-message {
+  background: rgba(239, 68, 68, 0.12);
+  border-left: 4px solid #ef4444;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  color: #ff6b6b;
+  font-size: 0.92rem;
+  text-align: center;
+}
+
+/* Botón principal */
+.submit-button {
+  background: var(--primary);
+  color: var(--black);
+  border: none;
+  border-radius: 14px;
+  padding: 1rem 2rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.submit-button:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-gold-glow);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Toggle entre login y register */
+.toggle-link {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  color: var(--secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.toggle-button:hover {
+  color: var(--celeste-light);
+  text-decoration: underline;
+}
+
+/* Panel derecho (imagen/promoción) */
+.image-content {
+  text-align: center;
+  max-width: 300px;
+  z-index: 2;
+}
+
+.image-content h2 {
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.2rem;
+  color: #000;
+  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+}
+
+.image-content p {
+  font-size: 1.15rem;
+  opacity: 0.95;
+  line-height: 1.6;
+  color: #111;
+}
+
+/* Efecto sutil en el panel de imagen */
+.image-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.25), transparent 60%);
+  pointer-events: none;
+}
+
+/* ====================== RESPONSIVE ====================== */
+@media (max-width: 900px) {
+  .split-screen {
+    height: 580px;
+  }
+  .form-title {
+    font-size: 2.1rem;
+  }
+  .image-content h2 {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .login-page {
+    padding: 15px;
+  }
+  .split-screen {
+    flex-direction: column;
+    height: auto;
+    min-height: 620px;
+    border-radius: 24px;
+  }
+  .form-panel,
+  .image-panel {
+    border-radius: 0;
+    padding: 2rem 1.8rem;
+  }
+  .form-panel {
+    order: 2;
+  }
+  .image-panel {
+    order: 1;
+    min-height: 220px;
+  }
+  .diagonal-divider {
+    display: none;
+  }
+}
