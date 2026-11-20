@@ -25,7 +25,7 @@ import {
     markAllNotificationsAsRead,
     getUnreadCount 
 } from '../service/notificationService';
-import '../styles/configuracion.css';
+import '../styles/Configuracion.css';
 
 const Configuracion = () => {
     const { user, userProfile, logout } = useAuth();
