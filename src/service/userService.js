@@ -1,32 +1,27 @@
 import { db } from '../lib/firebase';
-import { 
-    // Operaciones básicas
-    doc, 
-    setDoc, 
-    getDoc, 
-    updateDoc, 
+import {
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc,
     deleteDoc,
-    collection, 
-    query, 
-    where, 
+    collection,
+    query,
+    where,
     getDocs,
     orderBy,
     limit,
-    // Operaciones avanzadas
+    addDoc,
     serverTimestamp,
     increment,
     arrayUnion,
     arrayRemove,
     writeBatch,
-    // Realtime
     onSnapshot,
-    // Timestamp
     Timestamp
 } from 'firebase/firestore';
 
 // ==================== UTILIDADES GENERALES ====================
-
-// Generar ID corto
 function generateShortId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = '';
@@ -36,7 +31,6 @@ function generateShortId() {
     return result;
 }
 
-// Verificar si el shortId es único
 async function isShortIdUnique(shortId) {
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('shortId', '==', shortId));
@@ -44,34 +38,31 @@ async function isShortIdUnique(shortId) {
     return snapshot.empty;
 }
 
-// Generar shortId único
 async function generateUniqueShortId() {
     let shortId;
     let unique = false;
     let attempts = 0;
     const maxAttempts = 10;
-    
+
     while (!unique && attempts < maxAttempts) {
         shortId = generateShortId();
         unique = await isShortIdUnique(shortId);
         attempts++;
     }
-    
+
     if (!unique) {
         shortId = generateShortId() + Date.now().toString().slice(-2);
     }
-    
+
     return shortId;
 }
 
 // ==================== USUARIOS ====================
-
-// Crear perfil de usuario
 export async function createUserProfile(userId, email, displayName, birthDate) {
     try {
         const shortId = await generateUniqueShortId();
         const userRef = doc(db, 'users', userId);
-        
+
         await setDoc(userRef, {
             email,
             displayName,
@@ -82,10 +73,12 @@ export async function createUserProfile(userId, email, displayName, birthDate) {
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             friends: [],
-            following: [],      // ← AÑADIDO (de posts.js)
-            followers: []       // ← AÑADIDO (nuevo, para consistencia)
+            following: [],
+            followers: [],
+            acceptedTermsAt: null,
+            acceptedPrivacyAt: null
         });
-        
+
         return shortId;
     } catch (error) {
         console.error('Error al crear perfil:', error);
@@ -93,12 +86,18 @@ export async function createUserProfile(userId, email, displayName, birthDate) {
     }
 }
 
-// Obtener perfil de usuario
+export async function acceptTerms(userId, type) {
+    const field = type === 'terms' ? 'acceptedTermsAt' : 'acceptedPrivacyAt';
+    await updateDoc(doc(db, 'users', userId), {
+        [field]: serverTimestamp()
+    });
+}
+
 export async function getUserProfile(userId) {
     try {
         const userRef = doc(db, 'users', userId);
         const docSnap = await getDoc(userRef);
-        
+
         if (docSnap.exists()) {
             return {
                 uid: userId,
@@ -113,7 +112,6 @@ export async function getUserProfile(userId) {
     }
 }
 
-// Verificar si el nombre de usuario está ocupado
 export async function isDisplayNameTaken(displayName) {
     try {
         const usersRef = collection(db, 'users');
@@ -126,21 +124,20 @@ export async function isDisplayNameTaken(displayName) {
     }
 }
 
-// Actualizar perfil de usuario
 export async function updateUserProfile(userId, profileData) {
     const userRef = doc(db, 'users', userId);
-    
+
     try {
         const docSnap = await getDoc(userRef);
         if (!docSnap.exists()) {
             throw new Error('El perfil de usuario no existe');
         }
-        
+
         await updateDoc(userRef, {
             ...profileData,
             updatedAt: serverTimestamp()
         });
-        
+
         return true;
     } catch (error) {
         console.error('Error al actualizar perfil:', error);
@@ -148,7 +145,6 @@ export async function updateUserProfile(userId, profileData) {
     }
 }
 
-// Obtener todos los usuarios (para búsqueda)
 export async function getAllUsers() {
     try {
         const usersRef = collection(db, 'users');
@@ -163,19 +159,18 @@ export async function getAllUsers() {
     }
 }
 
-// Buscar usuarios por nombre
 export async function searchUsers(searchTerm) {
     try {
         const usersRef = collection(db, 'users');
         const snapshot = await getDocs(usersRef);
-        
+
         const searchLower = searchTerm.toLowerCase();
         return snapshot.docs
             .map(doc => ({
                 uid: doc.id,
                 ...doc.data()
             }))
-            .filter(user => 
+            .filter(user =>
                 user.displayName?.toLowerCase().includes(searchLower) ||
                 user.email?.toLowerCase().includes(searchLower) ||
                 user.shortId?.toLowerCase().includes(searchLower)
@@ -186,18 +181,17 @@ export async function searchUsers(searchTerm) {
     }
 }
 
-// Obtener perfil por shortId
 export async function getUserByShortId(shortId) {
     try {
         const usersRef = collection(db, 'users');
         const q = query(usersRef, where('shortId', '==', shortId.toUpperCase()));
         const snapshot = await getDocs(q);
-        
+
         if (!snapshot.empty) {
-            const doc = snapshot.docs[0];
+            const docSnap = snapshot.docs[0];
             return {
-                uid: doc.id,
-                ...doc.data()
+                uid: docSnap.id,
+                ...docSnap.data()
             };
         }
         return null;
@@ -207,79 +201,70 @@ export async function getUserByShortId(shortId) {
     }
 }
 
-// ==================== SEGUIR/DEJAR DE SEGUIR (NUEVO - DE POSTS.JS) ====================
-
-// Seguir a un usuario
+// ==================== SEGUIR/DEJAR DE SEGUIR ====================
 export async function followUser(currentUserId, targetUserId) {
     const currentUserRef = doc(db, 'users', currentUserId);
     const targetUserRef = doc(db, 'users', targetUserId);
-    
-    // Obtener datos actuales para saber los contadores reales
+
     const currentUserSnap = await getDoc(currentUserRef);
     const targetUserSnap = await getDoc(targetUserRef);
-    
+
     const currentFollowing = currentUserSnap.data()?.following || [];
     const targetFollowers = targetUserSnap.data()?.followers || [];
-    
-    // Verificar que no esté siguiendo ya (evitar duplicados)
+
     if (currentFollowing.includes(targetUserId)) {
         return false;
     }
-    
+
     const batch = writeBatch(db);
-    
-    // Actualizar currentUser
+
     batch.update(currentUserRef, {
         following: arrayUnion(targetUserId),
         followingCount: (currentUserSnap.data()?.followingCount || 0) + 1
     });
-    
-    // Actualizar targetUser
+
     batch.update(targetUserRef, {
         followers: arrayUnion(currentUserId),
         followersCount: (targetUserSnap.data()?.followersCount || 0) + 1
     });
-    
+
     await batch.commit();
     return true;
 }
 
-// Dejar de seguir a un usuario
 export async function unfollowUser(currentUserId, targetUserId) {
     const currentUserRef = doc(db, 'users', currentUserId);
     const targetUserRef = doc(db, 'users', targetUserId);
-    
+
     const currentUserSnap = await getDoc(currentUserRef);
     const targetUserSnap = await getDoc(targetUserRef);
-    
+
     const currentFollowing = currentUserSnap.data()?.following || [];
     const targetFollowers = targetUserSnap.data()?.followers || [];
-    
-    // Verificar que realmente lo esté siguiendo
+
     if (!currentFollowing.includes(targetUserId)) {
         return false;
     }
-    
-    // Evitar que el contador baje de 0
+
     const newFollowingCount = Math.max(0, (currentUserSnap.data()?.followingCount || 1) - 1);
     const newFollowersCount = Math.max(0, (targetUserSnap.data()?.followersCount || 1) - 1);
-    
+
     const batch = writeBatch(db);
-    
+
     batch.update(currentUserRef, {
         following: arrayRemove(targetUserId),
         followingCount: newFollowingCount
     });
-    
+
     batch.update(targetUserRef, {
         followers: arrayRemove(currentUserId),
         followersCount: newFollowersCount
     });
-    
+
     await batch.commit();
     return true;
 }
-// Verificar si sigue a un usuario
+
 export async function isFollowing(currentUserId, targetUserId) {
     try {
         const userRef = doc(db, 'users', currentUserId);
@@ -293,10 +278,8 @@ export async function isFollowing(currentUserId, targetUserId) {
 }
 
 // ==================== POSTS ====================
-
 const postsCollection = collection(db, 'posts');
 
-// Suscripción en tiempo real a posts
 export function subscribeToPosts(callback) {
     const q = query(postsCollection, orderBy('createdAt', 'desc'));
     return onSnapshot(q, (snapshot) => {
@@ -308,7 +291,6 @@ export function subscribeToPosts(callback) {
     });
 }
 
-// Crear post
 export async function createPost(postData) {
     try {
         await addDoc(postsCollection, {
@@ -317,7 +299,7 @@ export async function createPost(postData) {
             likedBy: [],
             commentCount: 0,
             createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()  // ← AÑADIDO (consistencia con users)
+            updatedAt: serverTimestamp()
         });
     } catch (error) {
         console.error('Error al crear post:', error);
@@ -325,7 +307,6 @@ export async function createPost(postData) {
     }
 }
 
-// Dar/Quitar like a un post
 export async function togglePostLike(postId, userId) {
     try {
         const postRef = doc(db, 'posts', String(postId));
@@ -354,12 +335,11 @@ export async function togglePostLike(postId, userId) {
     }
 }
 
-// Obtener posts de un usuario específico
 export async function getUserPosts(userId) {
     try {
         const q = query(
-            postsCollection, 
-            where('userId', '==', userId), 
+            postsCollection,
+            where('userId', '==', userId),
             orderBy('createdAt', 'desc')
         );
         const snapshot = await getDocs(q);
@@ -373,7 +353,6 @@ export async function getUserPosts(userId) {
     }
 }
 
-// Eliminar un post y todos sus comentarios
 export async function deletePost(postId) {
     try {
         const commentsRef = collection(db, 'posts', String(postId), 'comments');
@@ -388,7 +367,7 @@ export async function deletePost(postId) {
             });
             batch.delete(commentDoc.ref);
         }
-        
+
         const postRef = doc(db, 'posts', String(postId));
         batch.delete(postRef);
         await batch.commit();
@@ -398,7 +377,6 @@ export async function deletePost(postId) {
     }
 }
 
-// Editar un post
 export async function editPost(postId, newData) {
     try {
         const postRef = doc(db, 'posts', String(postId));
@@ -412,17 +390,16 @@ export async function editPost(postId, newData) {
     }
 }
 
-// Obtener posts de usuarios seguidos (FEED)
 export async function getFollowingPosts(userId) {
     try {
         const userRef = doc(db, 'users', userId);
         const userSnap = await getDoc(userRef);
         const following = userSnap.data()?.following || [];
-        
+
         if (following.length === 0) return [];
-        
+
         let allPosts = [];
-        
+
         for (const followedId of following) {
             const q = query(
                 postsCollection,
@@ -430,7 +407,7 @@ export async function getFollowingPosts(userId) {
                 orderBy('createdAt', 'desc'),
                 limit(10)
             );
-            
+
             const snapshot = await getDocs(q);
             snapshot.docs.forEach(doc => {
                 allPosts.push({
@@ -439,24 +416,23 @@ export async function getFollowingPosts(userId) {
                 });
             });
         }
-        
+
         return allPosts.sort((a, b) => {
             const timeA = a.createdAt?.toMillis?.() || 0;
             const timeB = b.createdAt?.toMillis?.() || 0;
             return timeB - timeA;
         });
-        
+
     } catch (error) {
         console.error('Error al obtener posts de seguidos:', error);
         return [];
     }
 }
 
-// Obtener posts trending (últimas 24 horas con más likes)
 export async function getTrendingPosts() {
     try {
         const oneDayAgo = Timestamp.fromDate(new Date(Date.now() - 24 * 60 * 60 * 1000));
-        
+
         const q = query(
             postsCollection,
             where('createdAt', '>=', oneDayAgo),
@@ -464,7 +440,7 @@ export async function getTrendingPosts() {
             orderBy('likes', 'desc'),
             limit(20)
         );
-        
+
         const snapshot = await getDocs(q);
         return snapshot.docs.map(doc => ({
             id: doc.id,
@@ -476,9 +452,7 @@ export async function getTrendingPosts() {
     }
 }
 
-// ==================== COMENTARIOS (NUEVO - COMPLETO) ====================
-
-// Agregar comentario a un post
+// ==================== COMENTARIOS ====================
 export async function addComment(postId, userId, userName, commentText) {
     try {
         const commentsRef = collection(db, 'posts', String(postId), 'comments');
@@ -490,13 +464,12 @@ export async function addComment(postId, userId, userName, commentText) {
             likes: 0,
             replies: []
         });
-        
-        // Incrementar contador de comentarios en el post
+
         const postRef = doc(db, 'posts', String(postId));
         await updateDoc(postRef, {
             commentCount: increment(1)
         });
-        
+
         return commentRef.id;
     } catch (error) {
         console.error('Error al agregar comentario:', error);
@@ -504,7 +477,6 @@ export async function addComment(postId, userId, userName, commentText) {
     }
 }
 
-// Obtener comentarios de un post
 export async function getComments(postId) {
     try {
         const commentsRef = collection(db, 'posts', String(postId), 'comments');
@@ -520,13 +492,11 @@ export async function getComments(postId) {
     }
 }
 
-// Eliminar comentario
 export async function deleteComment(postId, commentId) {
     try {
         const commentRef = doc(db, 'posts', String(postId), 'comments', commentId);
         await deleteDoc(commentRef);
-        
-        // Decrementar contador de comentarios en el post
+
         const postRef = doc(db, 'posts', String(postId));
         await updateDoc(postRef, {
             commentCount: increment(-1)
@@ -537,6 +507,194 @@ export async function deleteComment(postId, commentId) {
     }
 }
 
-// ==================== FUNCIONES FALTANTES (addDoc) ====================
-// Nota: addDoc no estaba importado, lo añado aquí
-// import { addDoc } from 'firebase/firestore';
+// ==================== SISTEMA DE AMIGOS ====================
+
+// Enviar solicitud de amistad (VERSIÓN FINAL UNIFICADA)
+export async function sendFriendRequest(fromUserId, toUserId) {
+    // 1. Verificar que no sean amigos ya
+    const alreadyFriends = await areFriends(fromUserId, toUserId);
+    if (alreadyFriends) return 'already_friends';
+
+    // 2. Verificar que no exista ya una solicitud pendiente
+    const requestsRef = collection(db, 'users', toUserId, 'friendRequests');
+    const q = query(requestsRef, where('fromUserId', '==', fromUserId), where('status', '==', 'pending'));
+    const existing = await getDocs(q);
+    if (!existing.empty) return false;
+
+    // 3. Crear ambas referencias en batch
+    const batch = writeBatch(db);
+
+    // Solicitud en el destinatario
+    const newRequestRef = doc(requestsRef);
+    batch.set(newRequestRef, {
+        fromUserId,
+        status: 'pending',
+        createdAt: serverTimestamp()
+    });
+
+    // Copia en sentRequests del remitente
+    const sentRef = doc(collection(db, 'users', fromUserId, 'sentRequests'));
+    batch.set(sentRef, {
+        toUserId,
+        status: 'pending',
+        createdAt: serverTimestamp()
+    });
+
+    await batch.commit();
+    return true;
+}
+
+// Suscribirse a solicitudes recibidas
+export function subscribeToFriendRequests(userId, callback) {
+    const requestsRef = collection(db, 'users', userId, 'friendRequests');
+    const q = query(requestsRef, where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
+
+    return onSnapshot(q, async (snapshot) => {
+        const requests = [];
+        for (const docSnap of snapshot.docs) {
+            const data = docSnap.data();
+            const fromUser = await getUserProfile(data.fromUserId);
+            requests.push({
+                id: docSnap.id,
+                fromUserId: data.fromUserId,
+                fromUserName: fromUser?.displayName || 'Usuario',
+                fromUserShortId: fromUser?.shortId || '????',
+                createdAt: data.createdAt,
+                status: data.status
+            });
+        }
+        callback(requests);
+    });
+}
+
+// Aceptar solicitud de amistad (CON CREACIÓN AUTOMÁTICA DE CHAT)
+export async function acceptFriendRequest(userId, requestId, fromUserId) {
+    const batch = writeBatch(db);
+
+    // Eliminar la solicitud
+    const requestRef = doc(db, 'users', userId, 'friendRequests', requestId);
+    batch.delete(requestRef);
+
+    // Eliminar de sentRequests del remitente
+    try {
+        const sentRef = collection(db, 'users', fromUserId, 'sentRequests');
+        const q = query(sentRef, where('toUserId', '==', userId), where('status', '==', 'pending'));
+        const sentSnap = await getDocs(q);
+        sentSnap.docs.forEach(d => batch.delete(d.ref));
+    } catch (err) { }
+
+    // Agregar a amigos de AMBOS
+    const userRef = doc(db, 'users', userId);
+    const fromUserRef = doc(db, 'users', fromUserId);
+
+    batch.update(userRef, { friends: arrayUnion(fromUserId) });
+    batch.update(fromUserRef, { friends: arrayUnion(userId) });
+
+    // ✅ CREAR EL CHAT AUTOMÁTICAMENTE
+    const chatId = [userId, fromUserId].sort().join('_');
+    const chatRef = doc(db, 'chats', chatId);
+    batch.set(chatRef, {
+        participants: [userId, fromUserId],
+        lastMessage: '🎉 ¡Ahora son amigos! Envía tu primer mensaje.',
+        lastMessageAt: serverTimestamp(),
+        [`unread_${userId}`]: 0,
+        [`unread_${fromUserId}`]: 0
+    }, { merge: true });
+
+    await batch.commit();
+    return true;
+}
+
+// Rechazar solicitud de amistad
+export async function rejectFriendRequest(userId, requestId) {
+    const requestRef = doc(db, 'users', userId, 'friendRequests', requestId);
+    await updateDoc(requestRef, { status: 'rejected' });
+}
+
+// Obtener lista de amigos
+export function subscribeToFriends(userId, callback) {
+    const userRef = doc(db, 'users', userId);
+
+    return onSnapshot(userRef, async (snap) => {
+        const data = snap.data();
+        const friendIds = data?.friends || [];
+
+        const friends = [];
+        for (const fid of friendIds) {
+            const profile = await getUserProfile(fid);
+            if (profile) {
+                friends.push({
+                    uid: profile.uid,
+                    displayName: profile.displayName,
+                    shortId: profile.shortId,
+                    avatarColor: profile.avatarColor
+                });
+            }
+        }
+        callback(friends);
+    });
+}
+
+// Verificar si son amigos
+export async function areFriends(userId1, userId2) {
+    const userRef = doc(db, 'users', userId1);
+    const snap = await getDoc(userRef);
+    const friends = snap.data()?.friends || [];
+    return friends.includes(userId2);
+}
+
+// ==================== SOLICITUDES ENVIADAS ====================
+
+// Obtener solicitudes enviadas por el usuario
+export async function getSentFriendRequests(userId) {
+    try {
+        const sentRef = collection(db, 'users', userId, 'sentRequests');
+        const q = query(sentRef, where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+
+        const requests = [];
+        for (const docSnap of snapshot.docs) {
+            const data = docSnap.data();
+            const toUser = await getUserProfile(data.toUserId);
+            requests.push({
+                id: docSnap.id,
+                toUserId: data.toUserId,
+                toUserName: toUser?.displayName || 'Usuario',
+                toUserShortId: toUser?.shortId || '????',
+                createdAt: data.createdAt,
+                status: data.status
+            });
+        }
+        return requests;
+    } catch (error) {
+        console.error('Error al obtener solicitudes enviadas:', error);
+        return [];
+    }
+}
+
+// Cancelar solicitud enviada
+export async function cancelSentFriendRequest(userId, requestId, toUserId) {
+    const batch = writeBatch(db);
+
+    // Eliminar de sentRequests
+    const sentRef = doc(db, 'users', userId, 'sentRequests', requestId);
+    batch.delete(sentRef);
+
+    // Buscar y eliminar la solicitud en el otro usuario
+    try {
+        const requestsRef = collection(db, 'users', toUserId, 'friendRequests');
+        const q = query(requestsRef, where('fromUserId', '==', userId), where('status', '==', 'pending'));
+        const snapshot = await getDocs(q);
+        snapshot.docs.forEach(docSnap => {
+            batch.delete(docSnap.ref);
+        });
+    } catch (err) {
+        // Puede fallar si la subcolección no existe
+    }
+
+    await batch.commit();
+    return true;
+
+
+    
+}

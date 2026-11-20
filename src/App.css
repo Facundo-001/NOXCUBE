@@ -178,9 +178,10 @@ body {
 .not-found-container {
   min-height: 100vh;
   background: var(--bg-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Eliminá o comentá estas líneas: */
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
 }
 
 .not-found-content {
@@ -189,8 +190,10 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 6rem 2rem 3rem;
+  padding: 2rem 2rem 3rem; /* Antes: 6rem 2rem 3rem */
   max-width: 600px;
+  margin: 0 auto; /* ← AGREGÁ ESTO para centrar horizontalmente */
+  min-height: calc(100vh - 60px); /* ← Altura menos el navbar */
   animation: fadeInUp 0.6s ease;
 }
 

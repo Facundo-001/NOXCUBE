@@ -1,0 +1,448 @@
+/* ==================== ADMIN PANEL - ESTILO CLÁSICO REFINADO ==================== */
+
+.admin-panel {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 24px 40px;
+  min-height: 100vh;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.admin-header svg {
+  color: var(--primary);
+}
+
+.admin-header h1 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.bot-badge {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 4px 12px;
+  border-radius: var(--border-radius-pill);
+  letter-spacing: 0.3px;
+}
+
+/* ==================== STATS ==================== */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  border-color: rgba(195, 164, 75, 0.2);
+  transform: translateY(-2px);
+}
+
+.stat-card svg {
+  color: var(--primary);
+  opacity: 0.7;
+}
+
+.stat-card.warning svg {
+  color: #c08060;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  font-family: 'Georgia', serif;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== TABS ==================== */
+.admin-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.admin-tabs button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.7rem 1.5rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.admin-tabs button:hover {
+  color: var(--text-primary);
+  background: rgba(195, 164, 75, 0.04);
+}
+
+.admin-tabs button.active {
+  color: var(--primary);
+}
+
+.admin-tabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 30%;
+  right: 30%;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* ==================== CONTENT ==================== */
+.admin-content {
+  min-height: 400px;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-style: italic;
+}
+
+/* ==================== REPORTS LIST ==================== */
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.report-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 1rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: var(--transition);
+  flex-wrap: wrap;
+}
+
+.report-card:hover {
+  border-color: rgba(195, 164, 75, 0.15);
+}
+
+.report-card.resolved {
+  opacity: 0.6;
+  border-left: 3px solid #5a8a5a;
+}
+
+.report-card.dismissed {
+  opacity: 0.5;
+  border-left: 3px solid var(--border-color);
+}
+
+.report-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.report-reason {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.report-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.report-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.resolve-btn,
+.dismiss-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  letter-spacing: 0.2px;
+}
+
+.resolve-btn {
+  background: rgba(90, 138, 90, 0.1);
+  color: #5a8a5a;
+  border: 1px solid rgba(90, 138, 90, 0.2);
+}
+
+.resolve-btn:hover {
+  background: rgba(90, 138, 90, 0.2);
+}
+
+.dismiss-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+
+.dismiss-btn:hover {
+  background: rgba(180, 60, 60, 0.08);
+  color: #c06060;
+  border-color: rgba(180, 60, 60, 0.2);
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: var(--border-radius-pill);
+  text-transform: capitalize;
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+
+/* ==================== USERS LIST ==================== */
+.users-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.user-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 0.8rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-card span {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+}
+
+.user-id {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+}
+
+/* ==================== BOT STATUS ==================== */
+.bot-status h3 {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  font-family: 'Georgia', serif;
+  margin-bottom: 1rem;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.status-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status-item span:first-child {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-item span:last-child {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.status-item .online {
+  color: #5a8a5a;
+}
+
+.status-item .offline {
+  color: #c06060;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .admin-panel {
+    padding: 70px 16px 30px;
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-tabs button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .users-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .users-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==================== ADMIN GATE ==================== */
+.admin-gate {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+}
+
+.admin-gate-form {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.admin-gate-form h2 {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    font-family: 'Georgia', serif;
+    margin-bottom: 0.5rem;
+}
+
+.admin-gate-form p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-pin-input {
+    width: 100%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.8rem;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: 8px;
+    margin-bottom: 1rem;
+}
+
+.admin-pin-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.admin-pin-error {
+    color: #c06060;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.admin-gate-form button {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 10px;
+    background: rgba(195, 164, 75, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(195, 164, 75, 0.2);
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.admin-gate-form button:hover {
+    background: rgba(195, 164, 75, 0.2);
+}

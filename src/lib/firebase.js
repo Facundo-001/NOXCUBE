@@ -1,10 +1,12 @@
 import { initializeApp } from 'firebase/app';
+import { setDoc } from 'firebase/firestore';
 import {
     getAuth,
     signInAnonymously,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
+    sendPasswordResetEmail,
     updateProfile,
     deleteUser 
 } from 'firebase/auth';
@@ -31,7 +33,9 @@ export {
     signInWithEmailAndPassword,
     signOut,
     updateProfile,
-    deleteUser 
+    deleteUser ,
+    sendPasswordResetEmail,
+    setDoc
 };
 
 

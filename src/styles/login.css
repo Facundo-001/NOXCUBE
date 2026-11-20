@@ -1,29 +1,21 @@
-/* ==================== LOGIN / REGISTER - ESTILO PREMIUM ==================== */
+/* ==================== LOGIN / REGISTER - ESTILO CLÁSICO REFINADO ==================== */
 
 .login-page {
   position: fixed;
   inset: 0;
   display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
   background: var(--bg-primary);
-  /* padding: 20px; */
   z-index: 1000;
   overflow: hidden;
 }
 
 .split-screen {
   width: 100vw;
-  /* max-width: 1100px; */
-  /* height: 620px; */
   height: 100vh;
-  background: var(--bg-surface);
-  border-radius: 28px;
+  background: var(--bg-secondary);
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
   display: flex;
   position: relative;
-  border: 1px solid var(--border-color-light);
 }
 
 .form-panel,
@@ -38,19 +30,18 @@
 }
 
 .form-panel {
-  background: var(--bg-surface);
-  border-radius: 28px 0 0 28px;
+  background: var(--bg-secondary);
 }
 
 .image-panel {
-  background: linear-gradient(135deg, var(--gold), var(--celeste));
-  border-radius: 0 28px 28px 0;
-  color: #000;
+  background: linear-gradient(155deg, #1a1a12 0%, #0f0f0f 50%, #121a1a 100%);
+  color: var(--text-primary);
   position: relative;
   overflow: hidden;
+  border-left: 1px solid var(--border-color);
 }
 
-/* Animaciones de cambio entre login y register */
+/* Animaciones */
 .form-panel.slide-right {
   transform: translateX(100%);
 }
@@ -59,178 +50,391 @@
   transform: translateX(-100%);
 }
 
-/* Contenido del formulario */
+/* ==================== FORM WRAPPER ==================== */
 .form-wrapper {
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
+}
+
+/* Logo */
+.form-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  color: var(--primary);
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  justify-content: center;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+/* Header */
+.form-header {
+  margin-bottom: 1.8rem;
+  text-align: center;
 }
 
 .form-title {
-  font-size: 2.4rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  margin-bottom: 2.2rem;
-  text-align: center;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  letter-spacing: 0.5px;
 }
 
+.form-subtitle {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ==================== AUTH FORM ==================== */
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.6rem;
+}
+
+/* Input groups */
+.input-group {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .input-field {
-  background: #1A1A1A;
+  width: 100%;
+  background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 1rem 1.3rem;
+  border-radius: 12px;
+  padding: 0.85rem 1.1rem;
   color: var(--text-primary);
-  font-size: 1.02rem;
+  font-size: 0.92rem;
   transition: var(--transition);
+  letter-spacing: 0.2px;
+}
+
+.input-field.with-icon {
+  padding-left: 44px;
+}
+
+.input-field::placeholder {
+  color: #4a4a4a;
+  font-style: italic;
 }
 
 .input-field:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(195, 164, 75, 0.15);
-  background: #222;
+  border-color: rgba(195, 164, 75, 0.4);
+  box-shadow: 0 0 0 4px rgba(195, 164, 75, 0.04);
+  background: var(--bg-surface);
 }
 
-.input-field::placeholder {
-  color: var(--text-muted);
-}
-
-/* Mensaje de error */
-.error-message {
-  background: rgba(239, 68, 68, 0.12);
-  border-left: 4px solid #ef4444;
-  padding: 0.9rem 1rem;
-  border-radius: 10px;
-  color: #ff6b6b;
-  font-size: 0.92rem;
-  text-align: center;
-}
-
-/* Botón principal */
-.submit-button {
-  background: var(--primary);
-  color: var(--black);
+/* Password toggle */
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
   border: none;
-  border-radius: 14px;
-  padding: 1rem 2rem;
-  font-weight: 700;
-  font-size: 1.05rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  transition: var(--transition-fast);
+  z-index: 1;
+}
+
+.password-toggle:hover {
+  color: var(--primary);
+}
+
+/* ==================== BOTONES ==================== */
+.submit-button {
+  width: 100%;
+  background: rgba(195, 164, 75, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(195, 164, 75, 0.2);
+  padding: 0.85rem;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   margin-top: 0.5rem;
-  box-shadow: var(--shadow-sm);
+  letter-spacing: 0.3px;
 }
 
 .submit-button:hover:not(:disabled) {
-  background: var(--primary-hover);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-gold-glow);
+  background: rgba(195, 164, 75, 0.2);
+  border-color: var(--primary);
+  box-shadow: 0 4px 20px rgba(195, 164, 75, 0.1);
+  transform: translateY(-2px);
 }
 
 .submit-button:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
   transform: none;
 }
 
-/* Toggle entre login y register */
-.toggle-link {
+.text-link {
+  background: none;
+  border: none;
+  color: var(--celeste);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: var(--transition-fast);
+  display: block;
+  width: 100%;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 0.3rem;
+  letter-spacing: 0.2px;
+}
+
+.text-link:hover {
+  color: var(--celeste-light);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ==================== ERROR ==================== */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(180, 60, 60, 0.08);
+  border: 1px solid rgba(180, 60, 60, 0.15);
+  color: #c06060;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  margin: 0.3rem 0;
+}
+
+/* ==================== RESET SUCCESS ==================== */
+.reset-success {
+  text-align: center;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-icon {
+  color: #5a8a5a;
+  margin-bottom: 1rem;
+}
+
+.reset-success h3 {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.reset-success p {
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.reset-spam {
+  color: var(--text-muted) !important;
+  font-size: 0.78rem !important;
+  margin-bottom: 1.5rem !important;
+  font-style: italic;
+}
+
+/* ==================== TOGGLE ==================== */
+.toggle-section {
+  text-align: center;
+  margin-top: 1.8rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.toggle-text {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  display: block;
+  margin-bottom: 0.4rem;
 }
 
 .toggle-button {
   background: none;
   border: none;
-  color: var(--secondary);
+  color: var(--primary);
   font-weight: 500;
   cursor: pointer;
-  transition: var(--transition);
+  font-size: 0.92rem;
+  transition: var(--transition-fast);
+  letter-spacing: 0.3px;
 }
 
 .toggle-button:hover {
-  color: var(--celeste-light);
+  color: var(--gold-light);
   text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-/* Panel derecho (imagen/promoción) */
+/* ==================== PANEL DECORATIVO ==================== */
 .image-content {
   text-align: center;
-  max-width: 300px;
+  max-width: 320px;
   z-index: 2;
 }
 
 .image-content h2 {
-  font-size: 2.6rem;
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 1.2rem;
-  color: #000;
-  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+  font-size: 2.2rem;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  letter-spacing: 0.5px;
 }
 
 .image-content p {
-  font-size: 1.15rem;
-  opacity: 0.95;
+  font-size: 1rem;
+  opacity: 0.7;
   line-height: 1.6;
-  color: #111;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
-/* Efecto sutil en el panel de imagen */
 .image-panel::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.25), transparent 60%);
+  background: 
+    radial-gradient(ellipse at 70% 30%, rgba(195, 164, 75, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 30% 70%, rgba(103, 232, 249, 0.02) 0%, transparent 50%);
   pointer-events: none;
 }
 
-/* ====================== RESPONSIVE ====================== */
-@media (max-width: 900px) {
-  .split-screen {
-    height: 580px;
-  }
-  .form-title {
-    font-size: 2.1rem;
-  }
-  .image-content h2 {
-    font-size: 2.2rem;
-  }
+.image-panel::after {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border: 1px solid rgba(195, 164, 75, 0.06);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
-@media (max-width: 700px) {
-  .login-page {
-    padding: 15px;
-  }
+/* ==================== GMAIL LINK ==================== */
+.gmail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(180, 60, 60, 0.1);
+  color: #c08080;
+  border: 1px solid rgba(180, 60, 60, 0.15);
+  padding: 0.6rem 1.3rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: var(--transition);
+  margin: 0.5rem 0 1rem;
+  letter-spacing: 0.3px;
+}
+
+.gmail-link:hover {
+  background: rgba(180, 60, 60, 0.18);
+  border-color: rgba(180, 60, 60, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(180, 60, 60, 0.1);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
   .split-screen {
     flex-direction: column;
     height: auto;
-    min-height: 620px;
-    border-radius: 24px;
+    min-height: 100vh;
   }
+
   .form-panel,
   .image-panel {
-    border-radius: 0;
-    padding: 2rem 1.8rem;
+    padding: 2rem 1.5rem;
   }
+
   .form-panel {
     order: 2;
+    flex: auto;
   }
+
   .image-panel {
     order: 1;
-    min-height: 220px;
+    min-height: 200px;
+    flex: none;
+    border-left: none;
+    border-bottom: 1px solid var(--border-color);
   }
-  .diagonal-divider {
-    display: none;
+
+  .form-wrapper {
+    max-width: 100%;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+  }
+
+  .image-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .image-content p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-panel,
+  .image-panel {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .image-panel {
+    min-height: 150px;
+  }
+
+  .input-field {
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem;
+  }
+
+  .input-field.with-icon {
+    padding-left: 40px;
+  }
+
+  .submit-button {
+    padding: 0.75rem;
+    font-size: 0.9rem;
   }
 }

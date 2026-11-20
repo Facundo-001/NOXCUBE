@@ -320,10 +320,10 @@ const Perfil = () => {
                         </div>
                         
                         <div className="perfil-details">
-                            <div className="detail-item">
+                            {/* <div className="detail-item">
                                 <Mail size={16} />
                                 <span>{user.email}</span>
-                            </div>
+                            </div> */}
                             <div className="detail-item">
                                 <Calendar size={16} />
                                 <span>Miembro desde {formatDate(userProfile.createdAt)}</span>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
+import Footbar from '../components/Footbar'
 import { subscribeToPosts } from '../service/postService';
 import { auth } from '../lib/firebase';
 import { Activity, X, Copy, Check, User, Mail, Key, Shield } from 'lucide-react';
@@ -90,14 +91,14 @@ const Home = ({ user }) => {
                     <h1 className="feed-title">Feeds</h1>
                     
                     {/* Botón de diagnóstico premium */}
-                    <button 
+                    {/* <button 
                         className="diagnostic-btn"
                         onClick={handleShowDiagnostic}
                         title="Diagnosticar autenticación"
                     >
                         <Activity size={18} />
                         <span>Diagnosticar</span>
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* {user && !user.isAnonymous && <PostForm user={user} />} */}
@@ -241,6 +242,7 @@ const Home = ({ user }) => {
                     </div>
                 )}
             </main>
+            <Footbar/>
         </>
     );
 };

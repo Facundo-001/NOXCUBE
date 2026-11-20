@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, MessageCircle, ChevronDown, ChevronUp, MoreVertical, Edit3, Trash2, AlertCircle, LogIn, Clock, X, Check } from 'lucide-react';
+import { Heart, MessageCircle, ChevronDown, ChevronUp, MoreVertical, Edit3, Trash2, AlertCircle, LogIn, Clock, X, Check, Flag } from 'lucide-react';
+import ReportModal from '../components/ReportModal';
 import {
     subscribeToComments,
     createComment,
@@ -14,6 +15,10 @@ import {
     editReply
 } from '../service/commentService';
 import '../styles/CommentSection.css';
+
+// Objetivo encontrar la seccion del bot activar la moderacion de comentarios automaticamente
+// Y ver que tan estricto es el bot las primeras pruebas no funcionaron por que falta su activacion
+
 
 const CommentSection = ({ postId, user }) => {
     const [comments, setComments] = useState([]);
@@ -188,21 +193,26 @@ const formatDate = (timestamp) => {
     try {
         const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
         const now = new Date();
-        const diffMs = now - date;
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffHours = Math.floor(diffMs / 3600000);
-        const diffDays = Math.floor(diffMs / 86400000);
-        
-        if (diffMins < 1) return 'Ahora mismo';
-        if (diffMins < 60) return `Hace ${diffMins} min`;
-        if (diffHours < 24) return `Hace ${diffHours} h`;
-        if (diffDays < 7) return `Hace ${diffDays} d`;
-        
-        return date.toLocaleDateString('es-ES', { 
-            day: 'numeric', 
-            month: 'short',
-            year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-        });
+        const diffSec = Math.floor((now - date) / 1000);
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        const diffDay = Math.floor(diffHour / 24);
+
+        if (diffSec < 60) return 'Ahora mismo';
+        if (diffMin === 1) return 'Hace 1 minuto';
+        if (diffMin < 60) return `Hace ${diffMin} minutos`;
+        if (diffHour === 1) return 'Hace 1 hora';
+        if (diffHour < 24) return `Hace ${diffHour} horas`;
+        if (diffDay === 1) return 'Hace 1 día';
+        if (diffDay < 7) return `Hace ${diffDay} días`;
+        if (diffDay < 30) {
+            const semanas = Math.floor(diffDay / 7);
+            return semanas === 1 ? 'Hace 1 semana' : `Hace ${semanas} semanas`;
+        }
+        const diffMonth = Math.floor(diffDay / 30.44);
+        if (diffMonth < 12) return diffMonth === 1 ? 'Hace 1 mes' : `Hace ${diffMonth} meses`;
+        const diffYear = Math.floor(diffDay / 365.25);
+        return diffYear === 1 ? 'Hace 1 año' : `Hace ${diffYear} años`;
     } catch (err) {
         return 'Ahora mismo';
     }
@@ -219,6 +229,7 @@ const CommentItem = ({ comment, postId, user, onCommentDeleted, setShowDeleteCon
     const [showEdit, setShowEdit] = useState(false);
     const [editText, setEditText] = useState(comment.text);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
     const menuRef = useRef(null);
     const navigate = useNavigate();
     const isAuthor = user && comment.userId === user.uid;
@@ -336,23 +347,30 @@ const CommentItem = ({ comment, postId, user, onCommentDeleted, setShowDeleteCon
                             {formatDate(comment.createdAt)}
                         </span>
                     </div>
-                    {isAuthor && !showEdit && (
-                        <div className="comment-menu-container" ref={menuRef}>
-                            <button className="menu-btn" onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}>
-                                <MoreVertical size={16} />
-                            </button>
-                            {menuOpen && (
-                                <div className="comment-menu">
-                                    <button onClick={() => { setMenuOpen(false); setShowEdit(true); }}>
-                                        <Edit3 size={14} /> <span>Editar</span>
+                    <div className="comment-menu-container" ref={menuRef}>
+                        <button className="menu-btn" onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}>
+                            <MoreVertical size={16} />
+                        </button>
+                        {menuOpen && (
+                            <div className="comment-menu">
+                                {isAuthor && (
+                                    <>
+                                        <button onClick={() => { setMenuOpen(false); setShowEdit(true); }}>
+                                            <Edit3 size={14} /> <span>Editar</span>
+                                        </button>
+                                        <button onClick={handleDelete}>
+                                            <Trash2 size={14} /> <span>Eliminar</span>
+                                        </button>
+                                    </>
+                                )}
+                                {!isAuthor && user && !user.isAnonymous && (
+                                    <button onClick={() => { setMenuOpen(false); setShowReportModal(true); }}>
+                                        <Flag size={14} /> <span>Reportar</span>
                                     </button>
-                                    <button onClick={handleDelete}>
-                                        <Trash2 size={14} /> <span>Eliminar</span>
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {showEdit ? (
@@ -429,6 +447,15 @@ const CommentItem = ({ comment, postId, user, onCommentDeleted, setShowDeleteCon
                         </form>
                     )}
                 </div>
+            )}
+
+            {showReportModal && (
+                <ReportModal 
+                    reporterId={user?.uid}
+                    targetId={comment.id} 
+                    targetType="comment"
+                    onClose={() => setShowReportModal(false)}
+                />
             )}
         </div>
     );

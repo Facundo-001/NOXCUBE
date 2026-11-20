@@ -1,106 +1,67 @@
+/* ==================== CREAR POST ==================== */
 .crear-post-container {
-    padding: 6rem 2rem 2rem;
-    max-width: 800px;
-    margin: 0 auto;
+  padding: 6rem 2rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .crear-post-title {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    background: var(--gradient-bg);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
+  font-size: 2rem;
+  font-weight: 400;
+  font-family: 'Georgia', serif;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  letter-spacing: 0.5px;
 }
 
 .crear-post-form {
-    background: var(--bg-card);
-    border-radius: 12px;
-    padding: 2rem;
-    border: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
 }
 
 .crear-post-input,
 .crear-post-textarea {
-    background: var(--bg-dark);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 1rem;
-    color: var(--text-primary);
-    font-size: 1rem;
-    font-family: inherit;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: var(--transition);
 }
 
 .crear-post-textarea {
-    resize: vertical;
-    min-height: 120px;
+  resize: vertical;
+  min-height: 140px;
 }
 
 .crear-post-input:focus,
 .crear-post-textarea:focus {
-    outline: none;
-    border-color: var(--primary-start);
+  outline: none;
+  border-color: rgba(195, 164, 75, 0.4);
 }
 
 .crear-post-submit {
-    background: var(--gradient-bg);
-    border: none;
-    border-radius: 8px;
-    padding: 1rem;
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    align-self: flex-end;
-    width: fit-content;
-    min-width: 120px;
+  background: rgba(195, 164, 75, 0.1);
+  border: 1px solid rgba(195, 164, 75, 0.2);
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  color: var(--primary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  align-self: flex-end;
+  letter-spacing: 0.3px;
 }
 
 .crear-post-submit:hover {
-    opacity: 0.9;
-}
-
-.read-more-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.2rem;
-    color: var(--primary-start);
-    text-decoration: none;
-    font-size: 0.9rem;
-    margin-bottom: 0.8rem;
-    transition: opacity 0.2s;
-}
-
-.read-more-link:hover {
-    opacity: 0.8;
-}
-
-.comment-link {
-    text-decoration: none;
-    color: var(--text-secondary);
-}
-
-.comment-link:hover {
-    color: var(--text-primary);
-}
-
-.read-more-btn {
-    background: none;
-    border: none;
-    color: var(--primary-start);
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 0.2rem 0;
-    text-decoration: underline;
-    display: inline-block;
-    margin-top: 0.3rem;
-}
-
-.read-more-btn:hover {
-    color: var(--accent-hover);
+  background: rgba(195, 164, 75, 0.2);
+  border-color: var(--primary);
 }
