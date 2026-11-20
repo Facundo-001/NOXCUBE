@@ -93,7 +93,36 @@ export async function acceptTerms(userId, type) {
     });
 }
 
+// ⚠️ Versión pública: NO devuelve el email (solo campos públicos)
 export async function getUserProfile(userId) {
+    try {
+        const userRef = doc(db, 'users', userId);
+        const docSnap = await getDoc(userRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            return {
+                uid: userId,
+                displayName: data.displayName,
+                shortId: data.shortId,
+                bio: data.bio,
+                avatarColor: data.avatarColor,
+                createdAt: data.createdAt,
+                followersCount: data.followersCount || 0,
+                followingCount: data.followingCount || 0
+                // ❌ email, birthDate, friends, following, followers, etc. NO se exponen
+            };
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('Error al obtener perfil:', error);
+        return null;
+    }
+}
+
+// ✅ Para el dueño de la cuenta (panel privado): SÍ incluye email
+export async function getMyProfile(userId) {
     try {
         const userRef = doc(db, 'users', userId);
         const docSnap = await getDoc(userRef);
@@ -107,7 +136,7 @@ export async function getUserProfile(userId) {
             return null;
         }
     } catch (error) {
-        console.error('Error al obtener perfil:', error);
+        console.error('Error al obtener mi perfil:', error);
         return null;
     }
 }
@@ -159,6 +188,7 @@ export async function getAllUsers() {
     }
 }
 
+// ⚠️ Búsqueda: ya NO busca por email (evita exponerlo)
 export async function searchUsers(searchTerm) {
     try {
         const usersRef = collection(db, 'users');
@@ -172,15 +202,23 @@ export async function searchUsers(searchTerm) {
             }))
             .filter(user =>
                 user.displayName?.toLowerCase().includes(searchLower) ||
-                user.email?.toLowerCase().includes(searchLower) ||
                 user.shortId?.toLowerCase().includes(searchLower)
-            );
+            )
+            .map(user => ({
+                uid: user.uid,
+                displayName: user.displayName,
+                shortId: user.shortId,
+                bio: user.bio,
+                avatarColor: user.avatarColor
+                // ❌ sin email
+            }));
     } catch (error) {
         console.error('Error al buscar usuarios:', error);
         return [];
     }
 }
 
+// ⚠️ Búsqueda por shortId: tampoco devuelve email
 export async function getUserByShortId(shortId) {
     try {
         const usersRef = collection(db, 'users');
@@ -189,9 +227,14 @@ export async function getUserByShortId(shortId) {
 
         if (!snapshot.empty) {
             const docSnap = snapshot.docs[0];
+            const data = docSnap.data();
             return {
                 uid: docSnap.id,
-                ...docSnap.data()
+                displayName: data.displayName,
+                shortId: data.shortId,
+                bio: data.bio,
+                avatarColor: data.avatarColor
+                // ❌ sin email
             };
         }
         return null;
@@ -694,7 +737,4 @@ export async function cancelSentFriendRequest(userId, requestId, toUserId) {
 
     await batch.commit();
     return true;
-
-
-    
 }

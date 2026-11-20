@@ -18,7 +18,6 @@ import {
 import { createNotification } from '../service/notificationService';
 import {
     Calendar,
-    Mail,
     FileText,
     MessageCircle,
     Heart,
@@ -141,7 +140,7 @@ const PerfilAjeno = () => {
                     try {
                         await createNotification(userId, 'follow', {
                             fromUserId: user.uid,
-                            fromUserName: user.displayName || user.email,
+                            fromUserName: user.displayName || 'Alguien',
                             message: 'te ha seguido'
                         });
                     } catch (err) { }
@@ -169,7 +168,7 @@ const PerfilAjeno = () => {
                 try {
                     await createNotification(profile.uid, 'friend_request', {
                         fromUserId: user.uid,
-                        fromUserName: user.displayName || user.email,
+                        fromUserName: user.displayName || 'Alguien',
                         message: 'te ha enviado una solicitud de amistad'
                     });
                 } catch (err) { }
@@ -228,7 +227,7 @@ const PerfilAjeno = () => {
                 try {
                     await createNotification(searchResult.uid, 'friend_request', {
                         fromUserId: user.uid,
-                        fromUserName: user.displayName || user.email,
+                        fromUserName: user.displayName || 'Alguien',
                         message: 'te ha enviado una solicitud de amistad'
                     });
                 } catch (err) { }
@@ -332,7 +331,7 @@ const PerfilAjeno = () => {
     }
 
     const avatarColor = profile.avatarColor || '#C3A44B';
-    const userInitial = profile.displayName?.charAt(0).toUpperCase() || profile.email?.charAt(0).toUpperCase() || '?';
+    const userInitial = profile.displayName?.charAt(0).toUpperCase() || '?';
 
     return (
         <>
@@ -439,15 +438,8 @@ const PerfilAjeno = () => {
 
                         <div className="perfil-details">
                             <div className="detail-item">
-                                <Mail size={16} />
-                                <span>{profile.email}</span>
-                            </div>
-                            <div className="detail-item">
                                 <Calendar size={16} />
                                 <span>Miembro desde {formatDate(profile.createdAt)}</span>
-                            </div>
-                            <div className="perfil-id-copy">
-                                <span className="id-value">ID: {profile.shortId}</span>
                             </div>
                         </div>
                     </div>
